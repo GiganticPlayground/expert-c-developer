@@ -1,0 +1,52 @@
+# CI for expert-c-developer
+#
+# Two gates, mirroring the repo's own promises:
+#   1. examples — every runnable example compiles warning-free under the T1
+#      baseline and runs clean under ASan+UBSan, on Linux (gcc AND clang)
+#      and macOS (clang). Dual-compiler discipline per references/tooling.md T6.
+#   2. links — every cited URL resolves (the "receipts" guarantee).
+#
+# The link job runs on pushes, manual dispatch, and a weekly schedule — but
+# NOT on pull requests, so PR results stay deterministic and never fail on
+# someone else's flaky web server. Link rot still gets caught within a week.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'   # Mondays 06:00 UTC — weekly link-rot sweep
+
+permissions:
+  contents: read
+
+jobs:
+  examples:
+    name: examples (${{ matrix.os }}, ${{ matrix.cc }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux: both compilers — each catches diagnostics the other misses.
+          - { os: ubuntu-latest, cc: gcc }
+          - { os: ubuntu-latest, cc: clang }
+          # macOS: clang (Apple's `gcc` is clang in disguise; a real gcc via
+          # Homebrew adds little over the Linux gcc leg).
+          - { os: macos-latest, cc: clang }
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and run all examples (warnings-as-errors + ASan/UBSan)
+        run: CC=${{ matrix.cc }} scripts/validate-examples.sh
+
+  links:
+    name: citation links resolve
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify every cited URL
+        run: scripts/check-links.sh
