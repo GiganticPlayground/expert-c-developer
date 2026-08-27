@@ -27,6 +27,7 @@ jobs:
   examples:
     name: examples (${{ matrix.os }}, ${{ matrix.cc }})
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
@@ -46,6 +47,7 @@ jobs:
     name: citation links resolve
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Verify every cited URL

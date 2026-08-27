@@ -107,7 +107,15 @@ static void demo_g8(void) {
     assert(label[0] == 'b');
 }
 
-/* G9: snprintf truncates AND terminates; detect the truncation. */
+/* G9: snprintf truncates AND terminates; detect the truncation.
+ * gcc's -Wformat-truncation statically proves this call truncates — but the
+ * truncation IS the demonstration, and the code checks for it. Suppress the
+ * warning narrowly, with justification: the right way to silence a warning
+ * you have proven intentional. (Guarded: clang doesn't know this group.) */
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
+#endif
 static void demo_g9(void) {
     char dst[8];
     const char *src = "this is far too long";
@@ -116,6 +124,9 @@ static void demo_g9(void) {
     assert(dst[sizeof dst - 1] == '\0');         /* still a valid string */
     assert(strlen(dst) == sizeof dst - 1);
 }
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 /* G10: test against the limit BEFORE the signed operation. */
 static bool add_checked(int a, int b, int *out) {

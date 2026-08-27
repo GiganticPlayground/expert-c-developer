@@ -18,6 +18,11 @@ $ErrorActionPreference = 'Continue'
 # Repo root, computed from this script's own location.
 $Root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 
+# Hosts that are checked but never fail the build: known to rate-limit or
+# block datacenter/burst traffic (c-faq.com runs on a 2005-era server).
+# Failures there are reported as WARN. Mirrors SOFT_HOSTS in check-links.sh.
+$SoftHosts = 'c-faq\.com'
+
 # Collect every unique http(s) URL from all Markdown files, trimming the
 # trailing punctuation Markdown prose leaves attached, skipping placeholders.
 $files = @(Get-ChildItem -Path $Root -Filter '*.md') +
@@ -35,9 +40,9 @@ foreach ($url in $urls) {
     $total++
     $ok = $false
 
-    # Up to 3 attempts with a growing delay — old/rate-limited hosts drop
-    # burst connections and recover seconds later.
-    for ($attempt = 1; $attempt -le 3; $attempt++) {
+    # Two attempts with a short delay — old/rate-limited hosts drop burst
+    # connections and recover seconds later.
+    for ($attempt = 1; $attempt -le 2; $attempt++) {
         try {
             $resp = Invoke-WebRequest -Uri $url -Method Head -MaximumRedirection 5 `
                 -TimeoutSec 20 -UserAgent 'Mozilla/5.0 (link-check; expert-c-developer skill)' `
@@ -56,8 +61,12 @@ foreach ($url in $urls) {
     }
 
     if (-not $ok) {
-        Write-Output "FAIL $url"
-        $failed = 1
+        if ($url -match $SoftHosts) {
+            Write-Output "WARN $url (soft host: does not fail the check)"
+        } else {
+            Write-Output "FAIL $url"
+            $failed = 1
+        }
     }
 }
 
