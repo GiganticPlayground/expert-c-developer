@@ -69,7 +69,10 @@ Honesty about scope is part of the credibility:
   recommends (clang-tidy, sanitizers, clang-format) — it tells you exactly
   which and how.
 - **Not a C tutorial.** It assumes you (or your agent) can already write C;
-  it exists to stop the specific, well-documented ways C goes wrong.
+  it exists to stop the specific, well-documented ways C goes wrong. If
+  you're learning the language,
+  [search the web for many excellent free C tutorials](https://www.google.com/search?q=free+c+tutorial+for+beginners)
+  first, then come back.
 - **Not MISRA compliance.** MISRA is paywalled and therefore excluded by this
   project's ground rules; BARR-C and the Power of Ten (both MISRA-aligned and
   freely available) carry the safety-critical perspective instead.
