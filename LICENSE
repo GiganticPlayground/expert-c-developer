@@ -1,0 +1,24 @@
+expert-c-developer is dual-licensed by content type:
+
+1. DOCUMENTATION AND PROSE
+   All Markdown documentation in this repository (README.md, SKILL.md,
+   LICENSE.md, and references/*.md) is licensed under the Creative Commons
+   Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0).
+   Full text: LICENSES/CC-BY-SA-4.0.txt
+   Online:    https://creativecommons.org/licenses/by-sa/4.0/
+
+2. CODE
+   All code — the code examples embedded in the documentation, all files
+   under examples/, and all files under scripts/ — is licensed under the
+   MIT License.
+   Full text: LICENSES/MIT.txt
+
+Rationale for the split, the upstream-license compatibility table, and the
+conduct rules governing sources that permit no derivatives at all (they are
+cited and paraphrased, never copied) are documented in LICENSE.md.
+
+Attribution for all referenced third-party works is maintained in
+references/SOURCES.md, and every rule in the reference files cites its
+sources with full URLs.
+
+Copyright (c) 2026 Gigantic Playground
