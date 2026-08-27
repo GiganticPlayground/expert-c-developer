@@ -46,7 +46,7 @@ jobs:
           # Homebrew adds little over the Linux gcc leg).
           - { os: macos-latest, cc: clang }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Compile and run all examples (warnings-as-errors + ASan/UBSan)
         run: CC=${{ matrix.cc }} scripts/validate-examples.sh
 
@@ -57,6 +57,6 @@ jobs:
     timeout-minutes: 10
     continue-on-error: true   # see header comment: doc sites 403 datacenter IPs
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Verify every cited URL
         run: scripts/check-links.sh
