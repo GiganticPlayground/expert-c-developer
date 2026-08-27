@@ -113,8 +113,12 @@ scripts/check-links.sh
 ```
 
 The first compiles and runs all examples under the skill's own warning
-baseline plus ASan+UBSan. The second checks every cited URL. Both exit
-nonzero on any failure — wire them into CI as-is.
+baseline plus ASan+UBSan; it exits nonzero on any failure and runs as a hard
+CI gate (see [.github/workflows/ci.yml](.github/workflows/ci.yml)). The
+second checks every cited URL in parallel — it's authoritative when run
+locally, but **advisory in CI**: several authoritative sources
+(cppreference.com, Barr Group, c-faq.com) bot-block datacenter IPs with 403s
+while serving browsers fine, so the CI leg reports rather than gates.
 
 **Platforms and dependencies.** The scripts are **bash, for Linux and macOS**:
 
